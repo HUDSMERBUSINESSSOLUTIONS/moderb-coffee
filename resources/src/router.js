@@ -244,6 +244,33 @@ const baseRoutes = [
                                 "./views/app/pages/projects/Edit_project"
                             )
                     },
+                    {
+                        name: "Ongoingdelivery",
+                        path: "Ongoingdelivery",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "index_project" */
+                                "./views/app/pages/projects/Ongoingdelivery"
+                            )
+                    },
+                    {
+                        name: "Completeddelivery",
+                        path: "Completeddelivery",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "store_project" */
+                                "./views/app/pages/projects/Completeddelivery"
+                            )
+                    },
+                    {
+                        name: "Payments",
+                        path: "Payments",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "store_project" */
+                                "./views/app/pages/projects/Payments"
+                            )
+                    },
 
                 ]
             },

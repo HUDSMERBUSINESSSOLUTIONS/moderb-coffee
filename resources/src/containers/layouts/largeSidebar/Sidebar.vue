@@ -772,9 +772,9 @@
             class="nav-item"
             v-if="currentUserPermissions && currentUserPermissions.includes('Customers_view')"
           >
-            <router-link tag="a" class to="/app/Projects/Ongoingdelivery">
+            <router-link tag="a" class to="/app/projects/Ongoingdelivery">
               <i class="nav-icon i-Administrator"></i>
-              <span class="item-name">{{$t('Ongoingdelivery')}}</span>
+              <span class="item-name">{{$t('Ongoing delivery')}}</span>
 
             </router-link>
           </li>
@@ -784,7 +784,7 @@
           >
             <router-link tag="a" class to="/app/Projects/Completeddelivery">
               <i class="nav-icon i-Administrator"></i>
-              <span class="item-name">{{$t('Completed_delivery')}}</span>
+              <span class="item-name">{{$t('Return delivery')}}</span>
             </router-link>
           </li>
           <li
@@ -923,7 +923,7 @@
             </router-link>
           </li>
 
-            <li
+            <!-- <li
             class="nav-item"
             v-if="currentUserPermissions && currentUserPermissions.includes('setting_system')"
           >
@@ -931,7 +931,7 @@
               <i class="nav-icon i-Upgrade"></i>
               <span class="item-name">{{$t('update_settings')}}</span>
             </router-link>
-          </li>
+          </li> -->
 
            <li
             class="nav-item"

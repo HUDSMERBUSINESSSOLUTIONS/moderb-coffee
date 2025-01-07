@@ -1,96 +1,78 @@
-<!-- <template>
-    <div class="main-content">
-      <breadcumb :page="$t('CustomerManagement')" :folder="$t('Customers')"/>
-      <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
-      <div v-else>
-        <div class="mb-5">
-          <span class="alert alert-danger" v-show="clients_without_ecommerce > 0 && (getallmodules && getallmodules.some(module => module.name === module_name))">
-            There are <strong>{{ clients_without_ecommerce}}</strong> 
-            customers not having an account in the online store.
-            <router-link  to="/app/People/Customers_without_ecommerce">
+<template>
+  <div class="main-content">
+    <breadcumb :page="$t('OngoingDelivery')" :folder="$t('Delivery')"/>
+    <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
+    <div v-else>
+      <div class="mb-5">
+        <span class="alert alert-danger" v-show="clients_without_ecommerce > 0 && (getallmodules && getallmodules.some(module => module.name === module_name))">
+          There are <strong>{{ clients_without_ecommerce }}</strong> 
+          customers not having an account in the online store.
+          <router-link to="/app/Projects/Customers_without_ecommerce">
             View Details
-            </router-link>
-          </span>
-        </div>
-        <vue-good-table
-          mode="remote"
-          :columns="columns"
-          :totalRows="totalRows"
-          :rows="clients"
-          @on-page-change="onPageChange"
-          @on-per-page-change="onPerPageChange"
-          @on-sort-change="onSortChange"
-          @on-search="onSearch"
-          :search-options="{
+          </router-link>
+        </span>
+      </div>
+      <vue-good-table
+        mode="remote"
+        :columns="columns"
+        :totalRows="totalRows"
+        :rows="clients"
+        @on-page-change="onPageChange"
+        @on-per-page-change="onPerPageChange"
+        @on-sort-change="onSortChange"
+        @on-search="onSearch"
+        :search-options="{
           enabled: true,
           placeholder: $t('Search_this_table'),  
         }"
-          :select-options="{ 
-            enabled: true ,
-            clearSelectionText: '',
-          }"
-          @on-selected-rows-change="selectionChanged"
-          :pagination-options="{
+        :select-options="{ 
+          enabled: true ,
+          clearSelectionText: '',
+        }"
+        @on-selected-rows-change="selectionChanged"
+        :pagination-options="{
           enabled: true,
           mode: 'records',
           nextLabel: 'next',
           prevLabel: 'prev',
         }"
-         :styleClass="showDropdown?'tableOne table-hover vgt-table full-height':'tableOne table-hover vgt-table non-height'"
-        >
-          <div slot="selected-row-actions">
-            <button class="btn btn-danger btn-sm" @click="delete_by_selected()">{{$t('Del')}}</button>
-          </div>
-          <div slot="table-actions" class="mt-2 mb-3">
-            <b-button variant="outline-info m-1" size="sm" v-b-toggle.sidebar-right>
-              <i class="i-Filter-2"></i>
-              {{ $t("Filter") }}
-            </b-button>
-            <b-button @click="clients_PDF()" size="sm" variant="outline-success m-1">
-              <i class="i-File-Copy"></i> PDF
-            </b-button>
-             <vue-excel-xlsx
-                class="btn btn-sm btn-outline-danger ripple m-1"
-                :data="clients"
-                :columns="columns"
-                :file-name="'clients'"
-                :file-type="'xlsx'"
-                :sheet-name="'clients'"
-                >
-                <i class="i-File-Excel"></i> EXCEL
-            </vue-excel-xlsx>
-            <b-button
-              @click="Show_import_clients()"
-              size="sm"
-              variant="info m-1"
-              v-if="currentUserPermissions && currentUserPermissions.includes('customers_import')"
-            >
-              <i class="i-Download"></i>
-              {{ $t("Import_Customers") }}
-            </b-button>
-            <b-button
-              @click="New_Client()"
-              size="sm"
-              variant="btn btn-primary btn-icon m-1"
-              v-if="currentUserPermissions && currentUserPermissions.includes('Customers_add')"
-            >
-              <i class="i-Add"></i>
-              {{$t('Add')}}
-            </b-button>
-          </div>
-  
-          <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'actions'">
-              <div>
-                <b-dropdown
-                  id="dropdown-right"
-                  variant="link"
-                  text="right align"
-                  toggle-class="text-decoration-none"
-                  size="lg"
-                  right
-                  no-caret
-                >
+        :styleClass="showDropdown ? 'tableOne table-hover vgt-table full-height' : 'tableOne table-hover vgt-table non-height'"
+      >
+        <div slot="selected-row-actions">
+          <button class="btn btn-danger btn-sm" @click="delete_by_selected()">{{$t('Del')}}</button>
+        </div>
+        <div slot="table-actions" class="mt-2 mb-3">
+          <b-button variant="outline-info m-1" size="sm" v-b-toggle.sidebar-right>
+            <i class="i-Filter-2"></i>
+            {{ $t("Filter") }}
+          </b-button>
+          <b-button @click="clients_PDF()" size="sm" variant="outline-success m-1">
+            <i class="i-File-Copy"></i> PDF
+          </b-button>
+        </div>
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'Track'">
+            <button class="btn btn-primary btn-sm" @click="trackClient(props.row)">
+              Track
+            </button>
+          </span>
+          <span v-else>
+            {{ props.row[props.column.field] }}
+          </span>
+        </template>
+
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'actions'">
+            <div>
+              <b-dropdown
+                id="dropdown-right"
+                variant="link"
+                text="right align"
+                toggle-class="text-decoration-none"
+                size="lg"
+                right
+                no-caret
+              >
                   <template v-slot:button-content class="_r_btn border-0">
                     <span class="_dot _r_block-dot bg-dark"></span>
                     <span class="_dot _r_block-dot bg-dark"></span>
@@ -170,28 +152,28 @@
             <!-- Code Customer   -->
             <b-col md="12">
               <b-form-group :label="$t('CustomerCode')">
-                <b-form-input label="Code" :placeholder="$t('SearchByCode')" v-model="Filter_Code"></b-form-input>
+                <b-form-input label="S.NO" :placeholder="$t('SearchByCode')" v-model="Filter_Code"></b-form-input>
               </b-form-group>
             </b-col>
   
             <!-- Name Customer   -->
             <b-col md="12">
               <b-form-group :label="$t('CustomerName')">
-                <b-form-input label="Name" :placeholder="$t('SearchByName')" v-model="Filter_Name"></b-form-input>
+                <b-form-input label="Date" :placeholder="$t('SearchByDate')" v-model="Filter_Name"></b-form-input>
               </b-form-group>
             </b-col>
   
             <!-- Phone Customer   -->
             <b-col md="12">
-              <b-form-group :label="$t('Phone')">
-                <b-form-input label="Phone" :placeholder="$t('SearchByPhone')" v-model="Filter_Phone"></b-form-input>
+              <b-form-group :label="$t('Address')">
+                <b-form-input label="Address" :placeholder="$t('SearchByAddress')" v-model="Filter_Phone"></b-form-input>
               </b-form-group>
             </b-col>
   
             <!-- Email Customer   -->
             <b-col md="12">
-              <b-form-group :label="$t('Email')">
-                <b-form-input label="Email" :placeholder="$t('SearchByEmail')" v-model="Filter_Email"></b-form-input>
+              <b-form-group :label="$t('Fromwarehouse')">
+                <b-form-input label="From warehouse" :placeholder="$t('SearchByWarehouse')" v-model="Filter_Email"></b-form-input>
               </b-form-group>
             </b-col>
   
@@ -510,11 +492,11 @@
       </b-modal>
   
       <!-- Modal Create & Edit Customer -->
-      <validation-observer ref="Create_Customer">
+      <!-- <validation-observer ref="Create_Customer">
         <b-modal hide-footer size="lg" id="New_Customer" :title="editmode?$t('Edit'):$t('Add')">
           <b-form @submit.prevent="Submit_Customer">
             <b-row>
-              <!-- Customer Name -->
+              
               <b-col md="6" sm="12">
                 <validation-provider
                   name="Name Customer"
@@ -534,7 +516,7 @@
                 </validation-provider>
               </b-col>
               
-               <!-- Customer Email -->
+              
               <b-col md="6" sm="12">
                   <b-form-group :label="$t('Email')">
                     <b-form-input
@@ -545,7 +527,7 @@
                   </b-form-group>
               </b-col>
   
-              <!-- Customer Phone -->
+              
               <b-col md="6" sm="12">
                   <b-form-group :label="$t('Phone')">
                     <b-form-input
@@ -556,7 +538,7 @@
                   </b-form-group>
               </b-col>
   
-              <!-- Customer Country -->
+             
               <b-col md="6" sm="12">
                   <b-form-group :label="$t('Country')">
                     <b-form-input
@@ -567,7 +549,7 @@
                   </b-form-group>
               </b-col>
   
-              <!-- Customer City -->
+              
               <b-col md="6" sm="12">
                   <b-form-group :label="$t('City')">
                     <b-form-input
@@ -578,9 +560,9 @@
                   </b-form-group>
               </b-col>
   
-               <!-- Customer Tax Number -->
+               
               <b-col md="6" sm="12">
-                  <b-form-group :label="$t('Tax_Number')">
+                  <b-form-group :label="$t('Phone')">
                     <b-form-input
                       label="Tax Number"
                       v-model="client.tax_number"
@@ -589,7 +571,7 @@
                   </b-form-group>
               </b-col>
   
-              <!-- Customer Adress -->
+             
               <b-col md="12" sm="12">
                   <b-form-group :label="$t('Adress')">
                     <textarea
@@ -612,7 +594,7 @@
             </b-row>
           </b-form>
         </b-modal>
-      </validation-observer>
+      </validation-observer> -->
   
       <!-- Modal show_credit_card_details -->
       <b-modal ok-only size="lg" id="show_credit_card_details" :title="$t('Saved_Credit_Card_Info')">
@@ -921,6 +903,7 @@
           account_id: "",
           date:"",
           return_Due: "",
+          Payment_mode: "",
           amount: "",
           notes: "",
           Reglement: "",
@@ -981,38 +964,38 @@
       columns() {
         return [
           {
-            label: this.$t("Code"),
+            label: this.$t("S.No"),
             field: "code",
             tdClass: "text-left",
             thClass: "text-left"
           },
           {
-            label: this.$t("Name"),
+            label: this.$t("Date"),
             field: "name",
             tdClass: "text-left",
             thClass: "text-left"
           },
   
           {
-            label: this.$t("Phone"),
+            label: this.$t("Address"),
             field: "phone",
             tdClass: "text-left",
             thClass: "text-left"
           },
           {
-            label: this.$t("Email"),
+            label: this.$t("From_Warehouse"),
             field: "email",
             tdClass: "text-left",
             thClass: "text-left"
           },
           {
-            label: this.$t("Tax_Number"),
+            label: this.$t("Phone"),
             field: "tax_number",
             tdClass: "text-left",
             thClass: "text-left"
           },
           {
-            label: this.$t("Total_Sale_Due"),
+            label: this.$t("Delivery_Person"),
             field: "due",
             type: "decimal",
             tdClass: "text-left",
@@ -1020,22 +1003,31 @@
             sortable: false
           },
           {
-            label: this.$t("Total_Sell_Return_Due"),
+            label: this.$t("Amount_total"),
             field: "return_Due",
             type: "decimal",
             tdClass: "text-left",
             thClass: "text-left",
             sortable: false
           },
-  
           {
-            label: this.$t("Action"),
-            field: "actions",
-            html: true,
-            tdClass: "text-right",
-            thClass: "text-right",
+            label: this.$t("Payment mode selected"),
+            field: "Payment_mode",
+            type: "decimal",
+            tdClass: "text-left",
+            thClass: "text-left",
+            sortable: false
+          },
+          {
+            label: this.$t("Track"),
+            field: "Track",
+            type: "decimal",
+            tdClass: "text-left",
+            thClass: "text-left",
             sortable: false
           }
+  
+
         ];
       }
     },
@@ -1229,15 +1221,15 @@
   
         let pdf = new jsPDF("p", "pt");
         let columns = [
-          { title: "Code", dataKey: "code" },
-          { title: "Name", dataKey: "name" },
-          { title: "Sale Due", dataKey: "due" },
-          { title: "Sell Return Due", dataKey: "return_Due" },
-          { title: "Tax Number", dataKey: "tax_number" },
-          { title: "Phone", dataKey: "phone" },
-          { title: "Email", dataKey: "email" },
-          { title: "Country", dataKey: "country" },
-          { title: "City", dataKey: "city" },
+          { title: "S.No", dataKey: "S.No" },
+          { title: "Date", dataKey: "Date" },
+          { title: "Address", dataKey: "Address" },
+          { title: "From warehouse", dataKey: "From warehouse" },
+          { title: "Phone", dataKey: "Phone" },
+          { title: "Delivery Person", dataKey: "Delivery Person" },
+          { title: "Amount Total", dataKey: "Amount Total" },
+          { title: "Payment Mode Selected", dataKey: "Payment Mode Selected" },
+          { title: "Track", dataKey: "Track" },
         ];
         pdf.autoTable(columns, self.clients);
         pdf.text("Customer List", 40, 25);
@@ -1443,34 +1435,34 @@
   
      
       //---------------------------------------- Create new Client -------------------------------\\
-      Create_Client() {
-        this.SubmitProcessing = true;
-        axios
-          .post("clients", {
-            name: this.client.name,
-            email: this.client.email,
-            phone: this.client.phone,
-            tax_number: this.client.tax_number,
-            country: this.client.country,
-            city: this.client.city,
-            adresse: this.client.adresse
-          })
-          .then(response => {
-            Fire.$emit("Event_Customer");
+      // Create_Client() {
+      //   this.SubmitProcessing = true;
+      //   axios
+      //     .post("clients", {
+      //       name: this.client.name,
+      //       email: this.client.email,
+      //       phone: this.client.phone,
+      //       tax_number: this.client.tax_number,
+      //       country: this.client.country,
+      //       city: this.client.city,
+      //       adresse: this.client.adresse
+      //     })
+      //     .then(response => {
+      //       Fire.$emit("Event_Customer");
   
-            this.makeToast(
-              "success",
-              this.$t("Create.TitleCustomer"),
-              this.$t("Success")
-            );
-            this.SubmitProcessing = false;
-          })
-          .catch(error => {
+      //       this.makeToast(
+      //         "success",
+      //         this.$t("Create.TitleCustomer"),
+      //         this.$t("Success")
+      //       );
+      //       this.SubmitProcessing = false;
+      //     })
+      //     .catch(error => {
             
-            this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
-            this.SubmitProcessing = false;
-          });
-      },
+      //       this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
+      //       this.SubmitProcessing = false;
+      //     });
+      // },
   
       //----------------------------------- Update Client -------------------------------\\
       Update_Client() {
@@ -1894,4 +1886,4 @@
     }
   };
   </script>
-   -->
+   

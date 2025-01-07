@@ -251,7 +251,7 @@
                             @input="Selected_Warehouse"
                             v-model="sale.warehouse_id"
                             :reduce="label => label.value"
-                            :placeholder="$t('Choose_Warehouse')"
+                            :placeholder="$t('Choose Warehouse')"
                             :options="warehouses.map(warehouses => ({label: warehouses.name, value: warehouses.id}))"
                           />
                         </b-form-group>

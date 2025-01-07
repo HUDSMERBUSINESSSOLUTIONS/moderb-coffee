@@ -67,7 +67,7 @@
           }
         }
         .nav-item-hold {
-          display: block;
+          display: flex;
           width: 100%;
           padding: 26px 0;
           color: $foreground;
@@ -77,16 +77,18 @@
           }
           .nav-icon,
           .feather {
-            font-size: 32px;
+            font-size: 28px;
             height: 32px;
             width: 32px;
             display: block;
             margin: 0 auto 6px;
+            margin-right:5px;
           }
           .nav-text {
-            font-size: 13px;
-            display: block;
+            font-size: 10px;
+            display: flex;
             font-weight: 400;
+            padding-top:10px;
           }
           a {
             color: $heading;
